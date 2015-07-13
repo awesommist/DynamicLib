@@ -1,0 +1,17 @@
+[
+{
+  "modid": "dynamiclib",
+  "name": "dynamiclib",
+  "description": "Common library for all 'Dynamics' mods.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "logoFile": "",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["awesommist"],
+  "credits": "awesommist",
+  "parent": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
