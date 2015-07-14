@@ -9,6 +9,7 @@ import java.util.EnumSet;
 import java.util.Set;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -61,6 +62,18 @@ public final class RenderUtils {
         tessellator.addVertex(x1, y2, z2);
         tessellator.addVertex(x2, y2, z2);
         tessellator.addVertex(x2, y2, z1);
+    }
+
+    public static void disableLightmap() {
+        OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
+    }
+
+    public static void enableLightmap() {
+        OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
     }
 
     public static void resetFacesOnRenderer(RenderBlocks renderer) { // TODO: javadoc this!
