@@ -67,7 +67,7 @@ public class BlockCoord implements Copyable<BlockCoord> {
      *      Offset in the 'z' axis
      */
     public BlockCoord(double x, double y, double z) {
-        this (MathHelper.floor_double(x), MathHelper.floor_double(y), MathHelper.floor_double(z));
+        this ((int) Math.round(x), (int) Math.round(y), (int) Math.round(z));
     }
 
     public BlockCoord(ForgeDirection direction) { // TODO: javadoc this
