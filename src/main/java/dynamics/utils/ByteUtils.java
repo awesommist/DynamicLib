@@ -14,6 +14,14 @@ import com.google.common.base.Throwables;
 
 public class ByteUtils {
 
+    public static int on(int val, int bit) {
+        return val | (1 << bit);
+    }
+
+    public static int off(int val, int bit) {
+        return val & ~(1 << bit);
+    }
+
     public static void writeVLI(DataOutput output, int value) {
         Preconditions.checkArgument(value >= 0, "Value cannot be negative");
 
