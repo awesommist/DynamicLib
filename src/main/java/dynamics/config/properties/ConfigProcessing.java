@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
+import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 
 import com.google.common.base.Preconditions;
@@ -68,7 +69,7 @@ public class ConfigProcessing {
         return Collections.unmodifiableCollection(configs.keySet());
     }
 
-    public static ModConfig getConfig(String modid) {
+    public static ModConfig getModConfig(String modid) {
         return configs.get(modid.toLowerCase());
     }
 

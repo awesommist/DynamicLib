@@ -39,7 +39,7 @@ public class ConfigurationChange extends Event {
 
     public static class Post extends ConfigurationChange {
         public Post(String name, String category) {
-            super(name, category);
+            super (name, category);
         }
     }
 }

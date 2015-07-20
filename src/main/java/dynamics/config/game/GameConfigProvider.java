@@ -102,6 +102,7 @@ public class GameConfigProvider {
                     continue;
                 }
 
+                @SuppressWarnings("unchecked")
                 Class<? extends I> fieldType = (Class<? extends I>) f.getType();
                 I entry = factory.construct(name, fieldType);
                 if (entry == null) continue;

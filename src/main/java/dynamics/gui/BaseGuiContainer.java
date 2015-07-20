@@ -27,6 +27,7 @@ public abstract class BaseGuiContainer<T extends ContainerBase<?>> extends Compo
         return new GuiComponentPanel(0, 0, xSize, ySize, getContainer());
     }
 
+    @SuppressWarnings("unchecked")
     public T getContainer() {
         return (T) inventorySlots;
     }

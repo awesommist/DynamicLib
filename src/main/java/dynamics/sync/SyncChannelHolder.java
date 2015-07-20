@@ -22,7 +22,7 @@ import cpw.mods.fml.relauncher.Side;
 
 public class SyncChannelHolder {
 
-    public static final String CHANNEL_NAME = "DynamicLib|M";
+    public static final String CHANNEL_NAME = "DynamicLib";
 
     public static final SyncChannelHolder INSTANCE = new SyncChannelHolder();
 

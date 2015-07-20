@@ -285,7 +285,6 @@ public abstract class SyncMap<H extends ISyncMapProvider> {
     public static ISyncMapProvider findSyncMap(World world, DataInput input) throws IOException {
         int handlerTypeId = ByteUtils.readVLI(input);
 
-        // If this happens, abort! Serious bug!
         Preconditions.checkPositionIndex(handlerTypeId, HandlerType.TYPES.length, "handler type");
 
         HandlerType handlerType = HandlerType.TYPES[handlerTypeId];

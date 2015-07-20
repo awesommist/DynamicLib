@@ -11,11 +11,13 @@ import net.minecraft.world.World;
 import dynamics.DynamicLib;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 import cpw.mods.fml.common.network.internal.FMLProxyPacket;
 
+@ChannelHandler.Sharable
 public class InboundSyncHandler extends SimpleChannelInboundHandler<FMLProxyPacket> {
 
     public static class SyncException extends RuntimeException {
