@@ -1,12 +1,12 @@
 [
 {
   "modid": "dynamiclib",
-  "name": "dynamiclib",
+  "name": "DynamicLib",
   "description": "Common library for all 'Dynamics' mods.",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "logoFile": "",
-  "url": "",
+  "url": "https://github.com/awesommist/DynamicLib",
   "updateUrl": "",
   "authorList": ["awesommist"],
   "credits": "awesommist",
