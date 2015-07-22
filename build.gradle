@@ -17,17 +17,17 @@ buildscript {
 
 apply plugin: 'forge'
 
-ext.configFile = file('build.properties')
+ext.configFile = file('gradle.properties')
 
 ext.config = parseConfig(configFile)
 
-version = "${config.lib_version}-${config.build_number}"
+version = "${config.lib_version}.${config.build_number}"
 group= "dynamics"
 archivesBaseName = config.mod_name
 
 minecraft {
     version = "${config.mc_version}-${config.forge_version}-${config.mc_version}"
-    runDir = "buildbin"
+    runDir = "out/run"
     
     replace '$LIB-VERSION$', config.lib_version
     
