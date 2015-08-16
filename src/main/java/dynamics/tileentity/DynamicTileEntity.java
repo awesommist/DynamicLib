@@ -15,7 +15,7 @@ import dynamics.utils.coord.DimCoord;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class DynamicTileEntity extends TileEntity {
+public abstract class DynamicTileEntity extends TileEntity {
 
     private boolean initialized = false;
     private boolean isActive = false;
