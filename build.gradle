@@ -1,73 +1,92 @@
+//================================================
+// Pre-execute
+
 buildscript {
     repositories {
+        // General deps
         mavenCentral()
+        // Minecraft Forge
         maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
+            name = 'Forge'
+            url = 'http://files.minecraftforge.net/maven'
         }
+        // Sonatype (for SpecialSource in 1.7+)
         maven {
-            name = "sonatype"
+            name = "Sonatype Nexus"
             url = "https://oss.sonatype.org/content/repositories/snapshots/"
         }
     }
+
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
     }
 }
 
+repositories {
+    maven {
+        name 'Forge'
+        url 'http://files.minecraftforge.net/maven'
+    }
+    maven {
+        name 'MinecraftS3'
+        url 'http://s3.amazonaws.com/Minecraft.Download/libraries'
+    }
+}
+
 apply plugin: 'forge'
 
-ext.configFile = file('gradle.properties')
+//================================================
+// Dependencies
 
+dependencies {}
+
+//================================================
+// Jar data
+
+ext.configFile = file('build.properties')
 ext.config = parseConfig(configFile)
 
-version = "${config.mc_version}-${config.lib_version}.${config.build_number}"
-group= "dynamics"
+version = "${config.lib_version}-${config.build_number}"
+group = "dynamics"
 archivesBaseName = config.mod_name
 
 minecraft {
-    version = "${config.mc_version}-${config.forge_version}-${config.mc_version}"
+    version = "${config.mc_version}-${config.forge_version}"
     runDir = "out/run"
-    
-    replace '$LIB-VERSION$', config.lib_version
-    
+
+    replace '$LIB_VERSION$', config.lib_version
     replaceIn 'DynamicLib.java'
-}
-
-dependencies {
-
 }
 
 processResources {
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
-    
+
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-        
-        expand 'version': project.version, 'mcversion': project.minecraft.version
+
+        expand 'version':project.version, 'mcversion':project.minecraft.version
     }
-    
+
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
 }
 
-task deobfJar(type: Jar) {
-    from(sourceSets.main.output)
-        archiveName = "${baseName}-${version}-deobf.${extension}"
-}
+//================================================
+// Jar tasks
 
-artifacts {
-    archives deobfJar
-}
-
-task incrementBuildNumber(dependsOn: 'reobf') << {
-    config.build_number = (config.build_number.toString().toInteger()) + 1
-    configFile.withWriter {
-        config.toProperties().store(it, "")
+task devJar(type: Jar, dependsOn: 'classes') {
+    from(sourceSets.main.output) {
+        include '**'
     }
+
+    extension = 'jar'
+    classifier = 'dev'
 }
+
+//================================================
+// Misc stuff
 
 def parseConfig(File config) {
     config.withReader {
@@ -77,5 +96,8 @@ def parseConfig(File config) {
     }
 }
 
-build.dependsOn tasks.incrementBuildNumber
+artifacts {
+    archives devJar
+}
+
 defaultTasks 'clean', 'build'
