@@ -46,7 +46,7 @@ dependencies {}
 ext.configFile = file('build.properties')
 ext.config = parseConfig(configFile)
 
-version = "${config.lib_version}-${config.build_number}"
+version = "${config.lib_version}"
 group = "dynamics"
 archivesBaseName = config.mod_name
 
