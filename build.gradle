@@ -43,7 +43,7 @@ dependencies {}
 //================================================
 // Jar data
 
-ext.configFile = file('build.properties')
+ext.configFile = file('gradle.properties')
 ext.config = parseConfig(configFile)
 
 version = "${config.lib_version}"
@@ -54,7 +54,7 @@ minecraft {
     version = "${config.mc_version}-${config.forge_version}"
     runDir = "out/run"
 
-    replace '$LIB_VERSION$', config.lib_version
+    replace '$LIB-VERSION$', config.lib_version
     replaceIn 'DynamicLib.java'
 }
 

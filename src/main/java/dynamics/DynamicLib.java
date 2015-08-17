@@ -20,7 +20,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
-@Mod(modid = DynamicLib.MODID, name = DynamicLib.NAME, version = "$LIB_VERSION$")
+@Mod(modid = DynamicLib.MODID, name = DynamicLib.NAME, version = "$LIB-VERSION$")
 public class DynamicLib {
 
     public static final String MODID = "dynamiclib";
