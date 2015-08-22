@@ -1,9 +1,4 @@
-/**
- * This class was created by <awesommist>. It's distributed as
- * part of the DynamicsLib Mod. Get the Source Code in github:
- * https://github.com/awesommist/DynamicsLib
- */
-package dynamics.client.render;
+package dynamics.renderer;
 
 import java.util.Map;
 
@@ -21,22 +16,18 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public final class BlockRenderingHandler implements ISimpleBlockRenderingHandler {
 
-    private static final IBlockRenderer<Block> DEFAULT_RENDERER = new DefaultBlockRenderer();
-
-    private final Map<Block, IBlockRenderer<Block>> blockRenderers = Maps.newIdentityHashMap();
-
     private final int renderId;
     private final boolean itemsIn3d;
 
-    public BlockRenderingHandler(int renderId) {
-        this (renderId, true);
-    }
+    protected static final IBlockRenderer<Block> DEFAULT_RENDERER = new DefaultBlockRenderer();
+    protected final Map<Block, IBlockRenderer<Block>> blockRenderers = Maps.newIdentityHashMap();
 
     public BlockRenderingHandler(int renderId, boolean itemsIn3d) {
         this.renderId = renderId;
         this.itemsIn3d = itemsIn3d;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void renderInventoryBlock(Block block, int metadata, int modelId, RenderBlocks renderer) {
         DynamicBlock dynamicBlock = null;
@@ -44,6 +35,7 @@ public final class BlockRenderingHandler implements ISimpleBlockRenderingHandler
         if (dynamicBlock != null) dynamicBlock.getRenderInfo().renderer.renderInventoryBlock(block, metadata, modelId, renderer);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer) {
         DynamicBlock dynamicBlock = null;

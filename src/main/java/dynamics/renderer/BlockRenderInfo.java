@@ -1,9 +1,4 @@
-/**
- * This class was created by <awesommist>. It's distributed as
- * part of the DynamicsLib Mod. Get the Source Code in github:
- * https://github.com/awesommist/DynamicsLib
- */
-package dynamics.client.render;
+package dynamics.renderer;
 
 import net.minecraft.util.IIcon;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -28,34 +23,34 @@ public class BlockRenderInfo {
     }
 
     public void updateIcons(IIcon down, IIcon up, IIcon north, IIcon south, IIcon west, IIcon east) {
-        this.downIcon = down;
-        this.upIcon = up;
-        this.northIcon = north;
-        this.southIcon = south;
-        this.westIcon = west;
-        this.eastIcon = east;
+        downIcon = down;
+        upIcon = up;
+        northIcon = north;
+        southIcon = south;
+        westIcon = west;
+        eastIcon = east;
     }
 
     public IIcon getTexture(ForgeDirection dir) {
         switch (dir) {
             case DOWN:
-                return this.downIcon;
+                return downIcon;
             case UP:
-                return this.upIcon;
+                return upIcon;
             case NORTH:
-                return this.northIcon;
+                return northIcon;
             case SOUTH:
-                return this.southIcon;
+                return southIcon;
             case WEST:
-                return this.westIcon;
+                return westIcon;
             case EAST:
-                return this.eastIcon;
+                return eastIcon;
         }
 
-        return this.downIcon;
+        return downIcon;
     }
 
     public boolean isValid() {
-        return this.downIcon != null && this.upIcon != null && this.northIcon != null && this.southIcon != null && this.westIcon != null && this.eastIcon != null;
+        return downIcon != null && upIcon != null && northIcon != null && southIcon != null && westIcon != null && eastIcon != null;
     }
 }

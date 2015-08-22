@@ -1,18 +1,13 @@
-/**
- * This class was created by <awesommist>. It's distributed as
- * part of the DynamicsLib Mod. Get the Source Code in github:
- * https://github.com/awesommist/DynamicsLib
- */
 package dynamics.utils.coord;
 
 import net.minecraft.tileentity.TileEntity;
-import dynamics.api.Copyable;
+import dynamics.api.ICopyable;
 
 /**
  * 4-tuple of integers used to represent coordinates in a three-dimensional space and a given dimension.
  * More stuff will be added as needed. Mostly used as block coords.
  */
-public class DimCoord implements Copyable<DimCoord> {
+public class DimCoord implements ICopyable<DimCoord> {
 
     /**
      * Offset in the 'x' axis

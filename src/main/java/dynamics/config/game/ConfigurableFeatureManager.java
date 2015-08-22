@@ -1,12 +1,8 @@
-/**
- * This class was created by <awesommist>. It's distributed as
- * part of the DynamicsLib Mod. Get the Source Code in github:
- * https://github.com/awesommist/DynamicsLib
- */
 package dynamics.config.game;
 
 import java.lang.reflect.Field;
 import java.util.Map;
+import java.util.Set;
 
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -70,6 +66,21 @@ public class ConfigurableFeatureManager extends AbstractFeatureManager {
         }
     }
 
+    public void addCustomRule(String category, String name, CustomFeatureRule rule) {
+        CustomFeatureRule prev = customRules.put(category, name, rule);
+        Preconditions.checkState(prev == null, "Duplicate rule on %s:%s", category, name);
+    }
+
+    @Override
+    public Set<String> getCategories() {
+        return features.rowKeySet();
+    }
+
+    @Override
+    public Set<String> getFeaturesInCategory(String category) {
+        return features.row(category).keySet();
+    }
+
     @Override
     public boolean isEnabled(String category, String name) {
         FeatureEntry result = features.get(category, name);
@@ -77,10 +88,5 @@ public class ConfigurableFeatureManager extends AbstractFeatureManager {
 
         CustomFeatureRule rule = customRules.get(category, name);
         return rule != null? rule.isEnabled(result.isEnabled) : result.isEnabled;
-    }
-
-    public void addCustomRule(String category, String name, CustomFeatureRule rule) {
-        CustomFeatureRule prev = customRules.put(category, name, rule);
-        Preconditions.checkState(prev == null, "Duplicate rule on %s:%s", category, name);
     }
 }

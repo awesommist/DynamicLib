@@ -1,9 +1,4 @@
-/**
- * This class was created by <awesommist>. It's distributed as
- * part of the DynamicsLib Mod. Get the Source Code in github:
- * https://github.com/awesommist/DynamicsLib
- */
-package dynamics.client.render;
+package dynamics.renderer;
 
 import java.util.Map;
 
@@ -15,13 +10,14 @@ import net.minecraft.world.IBlockAccess;
 import dynamics.block.DynamicBlock;
 import dynamics.tileentity.DynamicTileEntity;
 import dynamics.utils.render.RenderUtils;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import com.google.common.collect.Maps;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 @SideOnly(Side.CLIENT)
 public class DefaultBlockRenderer implements IBlockRenderer<Block> {
@@ -59,9 +55,6 @@ public class DefaultBlockRenderer implements IBlockRenderer<Block> {
         DynamicBlock dynamicBlock = (block instanceof DynamicBlock) ? (DynamicBlock) block : null;
 
         if (dynamicBlock == null || dynamicBlock.shouldRenderBlock()) {
-            if (dynamicBlock != null) {
-                int metadata = world.getBlockMetadata(x, y, z);
-            }
             renderer.renderStandardBlock(block, x, y, z);
             RenderUtils.resetFacesOnRenderer(renderer);
         }

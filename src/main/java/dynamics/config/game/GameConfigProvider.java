@@ -1,8 +1,3 @@
-/**
- * This class was created by <awesommist>. It's distributed as
- * part of the DynamicsLib Mod. Get the Source Code in github:
- * https://github.com/awesommist/DynamicsLib
- */
 package dynamics.config.game;
 
 import java.lang.annotation.Annotation;
@@ -10,6 +5,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -22,6 +18,7 @@ import dynamics.config.ItemInstances;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 
 import cpw.mods.fml.common.Loader;
@@ -43,6 +40,16 @@ public class GameConfigProvider {
         @Override
         public boolean isEnabled(String category, String name) {
             return true;
+        }
+
+        @Override
+        public Set<String> getCategories() {
+            return ImmutableSet.of();
+        }
+
+        @Override
+        public Set<String> getFeaturesInCategory(String category) {
+            return ImmutableSet.of();
         }
     };
 

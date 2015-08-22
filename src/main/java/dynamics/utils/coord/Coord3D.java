@@ -1,18 +1,13 @@
-/**
- * This class was created by <awesommist>. It's distributed as
- * part of the DynamicsLib Mod. Get the Source Code in github:
- * https://github.com/awesommist/DynamicsLib
- */
 package dynamics.utils.coord;
 
 import net.minecraft.util.Vec3;
-import dynamics.api.Copyable;
+import dynamics.api.ICopyable;
 
 /**
  * 3-tuple of doubles used to represent coordinates in a three-dimensional space.
  * More stuff will be added as needed.
  */
-public class Coord3D implements Copyable<Coord3D> {
+public class Coord3D implements ICopyable<Coord3D> {
 
     /**
      * Offset in the 'x' axis

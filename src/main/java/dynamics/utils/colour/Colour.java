@@ -1,13 +1,8 @@
-/**
- * This class was created by <awesommist>. It's distributed as
- * part of the DynamicsLib Mod. Get the Source Code in github:
- * https://github.com/awesommist/DynamicsLib
- */
 package dynamics.utils.colour;
 
-import dynamics.api.Copyable;
+import dynamics.api.ICopyable;
 
-public abstract class Colour implements Copyable<Colour> {
+public abstract class Colour implements ICopyable<Colour> {
 
     public byte r;
     public byte g;

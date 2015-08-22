@@ -1,8 +1,3 @@
-/**
- * This class was created by <awesommist>. It's distributed as
- * part of the DynamicsLib Mod. Get the Source Code in github:
- * https://github.com/awesommist/DynamicsLib
- */
 package dynamics.config.properties;
 
 import java.io.File;
@@ -11,7 +6,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
-import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 
 import com.google.common.base.Preconditions;

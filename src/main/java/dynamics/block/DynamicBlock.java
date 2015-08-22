@@ -1,19 +1,22 @@
-/**
- * This class was created by <awesommist>. It's distributed as
- * part of the DynamicsLib Mod. Get the Source Code in github:
- * https://github.com/awesommist/DynamicsLib
- */
 package dynamics.block;
+
+import java.io.IOException;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.resources.IResource;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import dynamics.client.render.BlockRenderInfo;
-import dynamics.client.render.DefaultBlockRenderer;
-import dynamics.client.render.IBlockRenderer;
+import dynamics.api.ICustomHarvestDrops;
 import dynamics.config.game.IRegisterableBlock;
+import dynamics.renderer.BlockRenderInfo;
+import dynamics.renderer.DefaultBlockRenderer;
+import dynamics.renderer.IBlockRenderer;
 import dynamics.tileentity.DynamicTileEntity;
 
 import com.google.common.base.Preconditions;
@@ -50,7 +53,7 @@ public abstract class DynamicBlock extends Block implements IRegisterableBlock {
     protected DynamicBlock(Material material) {
         super (material);
 
-        this.isBlockContainer = false;
+        isBlockContainer = false;
     }
 
     protected abstract Object getModInstance();
@@ -61,9 +64,17 @@ public abstract class DynamicBlock extends Block implements IRegisterableBlock {
         this.modid = modid;
 
         if (tileEntity != null) {
-            this.teClass = tileEntity;
-            this.isBlockContainer = true;
+            teClass = tileEntity;
+            isBlockContainer = true;
         }
+    }
+
+    public boolean shouldDropFromTeAfterBreak() {
+        return true;
+    }
+
+    public boolean shouldOverrideHarvestWithTeLogic() {
+        return teClass != null && ICustomHarvestDrops.class.isAssignableFrom(teClass);
     }
 
     @Override
@@ -92,8 +103,8 @@ public abstract class DynamicBlock extends Block implements IRegisterableBlock {
         if (teClass == null) return null;
         try {
             return teClass.newInstance();
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException("Failed to create TE with class " + teClass, e);
+        } catch (Exception ex) {
+            throw new RuntimeException("Failed to create TE with class " + teClass, ex);
         }
     }
 
@@ -102,19 +113,59 @@ public abstract class DynamicBlock extends Block implements IRegisterableBlock {
     }
 
     @SideOnly(Side.CLIENT)
+    @Override
+    public void registerBlockIcons(IIconRegister registry) {
+        final BlockRenderInfo info = getRenderInfo();
+        final IIcon downIcon;
+        final IIcon upIcon;
+        final IIcon sideIcon;
+        final IIcon northIcon;
+        final IIcon southIcon;
+        final IIcon westIcon;
+        final IIcon eastIcon;
+
+        blockIcon = downIcon = getIconWithSub(registry, getTextureName(), null);
+        upIcon = getIconWithSub(registry, getTextureName() + "Top", downIcon);
+        sideIcon = getIconWithSub(registry, getTextureName() + "Side", downIcon);
+        northIcon = getIconWithSub(registry, getTextureName() + "North", sideIcon); // back
+        southIcon = getIconWithSub(registry, getTextureName() + "South", sideIcon); // front
+        westIcon = getIconWithSub(registry, getTextureName() + "South", sideIcon);
+        eastIcon = getIconWithSub(registry, getTextureName() + "South", sideIcon);
+
+        info.updateIcons(downIcon, upIcon, northIcon, southIcon, westIcon, eastIcon);
+    }
+
+    @SideOnly(Side.CLIENT)
+    private IIcon getIconWithSub(IIconRegister registry, String name, IIcon substitute) {
+        if (substitute != null) {
+            try {
+                ResourceLocation resLoc = new ResourceLocation(name);
+                resLoc = new ResourceLocation(resLoc.getResourceDomain(), String.format("%s/%s%s", "textures/blocks", resLoc.getResourcePath(), ".png"));
+
+                IResource res = Minecraft.getMinecraft().getResourceManager().getResource(resLoc);
+                if (res != null) return registry.registerIcon(name);
+            } catch (IOException e) {
+                return substitute;
+            }
+        }
+
+        return registry.registerIcon(name);
+    }
+
+    @SideOnly(Side.CLIENT)
     public BlockRenderInfo getRenderInfo() {
-        if (this.renderInfo != null)
-            return this.renderInfo;
+        if (renderInfo != null)
+            return renderInfo;
 
         try {
             final IBlockRenderer render = this.getRendererClass().newInstance();
-            this.renderInfo = new BlockRenderInfo(render);
+            renderInfo = new BlockRenderInfo(render);
 
-            return this.renderInfo;
+            return renderInfo;
         } catch (InstantiationException e) {
-            throw new IllegalStateException("Failed to create an instance of an illegal class " + this.getRendererClass(), e);
+            throw new IllegalStateException("Failed to create an instance of an illegal class " + getRendererClass(), e);
         } catch (IllegalAccessException e) {
-            throw new IllegalStateException("Failed to create an instance of " + this.getRendererClass() + " because of permissions", e);
+            throw new IllegalStateException("Failed to create an instance of " + getRendererClass() + " because of permissions", e);
         }
     }
 
@@ -123,8 +174,9 @@ public abstract class DynamicBlock extends Block implements IRegisterableBlock {
         return DefaultBlockRenderer.class;
     }
 
-    @SideOnly(Side.CLIENT)
-    public void setRenderStateByMeta(int metadata) {}
+    protected boolean suppressPickBlock() {
+        return false;
+    }
 
     @SideOnly(Side.CLIENT)
     public final boolean shouldRenderBlock() {
@@ -134,5 +186,17 @@ public abstract class DynamicBlock extends Block implements IRegisterableBlock {
     @SideOnly(Side.CLIENT)
     public final boolean shouldRenderTesrInInventory() {
         return renderMode != RenderMode.BLOCK_ONLY;
+    }
+
+    protected BlockPlacementMode getPlacementMode() {
+        return blockPlacementMode;
+    }
+
+    protected void setRenderMode(RenderMode renderMode) {
+        this.renderMode = renderMode;
+    }
+
+    protected void setPlacementMode(BlockPlacementMode mode) {
+        this.blockPlacementMode = mode;
     }
 }
