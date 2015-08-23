@@ -101,6 +101,11 @@ public abstract class DynamicBlock extends Block implements IRegisterableBlock {
         return te;
     }
 
+    @Override
+    public boolean hasTileEntity(int metadata) {
+        return teClass != null;
+    }
+
     public TileEntity createTileEntityForRender() {
         final TileEntity te = createTileEntity();
         Preconditions.checkNotNull(te, "Trying to get rendering TE for '%s', but it's not configured", this);
