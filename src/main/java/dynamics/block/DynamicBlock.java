@@ -1,25 +1,35 @@
 package dynamics.block;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.resources.IResource;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import dynamics.api.ICustomHarvestDrops;
+import net.minecraftforge.common.util.ForgeDirection;
+import dynamics.api.*;
 import dynamics.config.game.IRegisterableBlock;
 import dynamics.renderer.BlockRenderInfo;
 import dynamics.renderer.DefaultBlockRenderer;
 import dynamics.renderer.IBlockRenderer;
 import dynamics.tileentity.DynamicTileEntity;
+import dynamics.utils.BlockUtils;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -174,8 +184,94 @@ public abstract class DynamicBlock extends Block implements IRegisterableBlock {
         return DefaultBlockRenderer.class;
     }
 
+    private static List<ItemStack> getTileBreakDrops(TileEntity te) {
+        List<ItemStack> breakDrops = Lists.newArrayList();
+        BlockUtils.getTileInventoryDrops(te, breakDrops);
+        if (te instanceof ICustomBreakDrops) ((ICustomBreakDrops) te).addDrops(breakDrops);
+        return breakDrops;
+    }
+
+    @Override
+    public void breakBlock(World world, int x, int y, int z, Block block, int meta) {
+        if (shouldDropFromTeAfterBreak()) {
+            final TileEntity te = world.getTileEntity(x, y, z);
+            if (te != null) {
+                if (te instanceof IBreakAwareTile) ((IBreakAwareTile) te).onBlockBroken();
+
+                for (ItemStack stack : getTileBreakDrops(te))
+                    BlockUtils.dropItemStackInWorld(world, x, y, z, stack);
+
+                world.removeTileEntity(x, y, z);
+            }
+        }
+        super.breakBlock(world, x, y, z, block, meta);
+    }
+
+    private static boolean isNeighborBlockSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side) {
+        x += side.offsetX;
+        y += side.offsetY;
+        z += side.offsetZ;
+        return world.isSideSolid(x, y, z, side.getOpposite(), false);
+    }
+
+    private static boolean areNeighborBlocksSolid(World world, int x, int y, int z, ForgeDirection... sides) {
+        for (ForgeDirection side : sides) {
+            if (isNeighborBlockSolid(world, x, y, z, side)) { return true; }
+        }
+        return false;
+    }
+
+    @Override
+    public void onNeighborBlockChange(World world, int x, int y, int z, Block neighbour) {
+        TileEntity te = world.getTileEntity(x, y, z);
+        if (te instanceof INeighbourAwareTile) ((INeighbourAwareTile)te).onNeighbourChanged(neighbour);
+
+        if (te instanceof ISurfaceAttachment) {
+            ForgeDirection direction = ((ISurfaceAttachment)te).getSurfaceDirection();
+            if (!isNeighborBlockSolid(world, x, y, z, direction)) {
+                world.func_147480_a(x, y, z, true);
+            }
+        }
+    }
+
+    @Override
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
+        TileEntity te = world.getTileEntity(x, y, z);
+
+        if (te instanceof IHasGui && ((IHasGui) te).canOpenGui(player) && !player.isSneaking()) {
+            if (!world.isRemote) openGui(player, world, x, y, z);
+            return true;
+        }
+
+        return te instanceof IActivateAwareTile && ((IActivateAwareTile) te).onBlockActivated(player, side, hitX, hitY, hitZ);
+    }
+
+    @Override
+    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase placer, ItemStack stack) {
+        super.onBlockPlacedBy(world, x, y, z, placer, stack);
+
+        TileEntity te = world.getTileEntity(x, y, z);
+        if (te instanceof IPlacerAwareTile) ((IPlacerAwareTile) te).onBlockPlacedBy(placer, stack);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <U> U getTileEntity(IBlockAccess world, int x, int y, int z, Class<U> T) {
+        TileEntity te = world.getTileEntity(x, y, z);
+        if (te != null && T.isAssignableFrom(te.getClass())) return (U) te;
+        return null;
+    }
+
+    @Override
+    public boolean renderAsNormalBlock() {
+        return isOpaqueCube();
+    }
+
     protected boolean suppressPickBlock() {
         return false;
+    }
+
+    public void openGui(EntityPlayer player, World world, int x, int y, int z) {
+        player.openGui(getModInstance(), DYNAMICS_TE_GUI, world, x, y, z);
     }
 
     @SideOnly(Side.CLIENT)

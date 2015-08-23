@@ -1,6 +1,11 @@
 package dynamics.utils;
 
+import java.util.List;
+
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+
+import com.google.common.collect.Lists;
 
 public class InventoryUtils {
 
@@ -29,5 +34,14 @@ public class InventoryUtils {
         }
 
         return false;
+    }
+
+    public static List<ItemStack> getInventoryContents(IInventory inventory) {
+        List<ItemStack> result = Lists.newArrayList();
+        for (int i = 0; i < inventory.getSizeInventory(); i++) {
+            ItemStack slot = inventory.getStackInSlot(i);
+            if (slot != null) result.add(slot);
+        }
+        return result;
     }
 }
